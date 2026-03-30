@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Witamy w Banku PEKAO SA</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    html, body {
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+                    url('https://cdn-netpr.pl/file/mediakit/2676250/a7/pekao_tower_5_2_.jpg') no-repeat center center;
+        background-size: cover;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+
+    header {
+        width: 100%;
+        height: 180px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        box-sizing: border-box;
+        padding: 30px 0 10px 0;
+    }
+
+    header h1 {
+        font-size: 3em;
+        margin: 0;
+        font-weight: 700;
+    }
+
+    header h2 {
+        font-size: 1.5em;
+        margin: 10px 0 0 0;
+        font-weight: 400;
+    }
+
+    /* QR kod lewy górny róg */
+    #qrcode {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        width: 100px;
+        height: 100px;
+        z-index: 10;
+    }
+
+    /* Logo w prawym górnym rogu, 30% większe od QR */
+    #bankLogo {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 130px;
+        height: auto;
+        z-index: 10;
+    }
+
+    main {
+        flex: 1;
+        width: 90%;
+        max-width: 1920px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        gap: 60px;
+        justify-items: center;
+        align-items: center;
+        padding: 20px 0;
+    }
+
+    .service-card {
+        width: 400px;
+        height: 400px;
+        border-radius: 20px;
+        background-color: rgba(0,0,0,0.55);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .service-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.5);
+    }
+
+    .service-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .service-icon {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background-color: #E30613;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 4em;
+        color: #fff;
+        margin-bottom: 20px;
+    }
+
+    .service-label {
+        font-size: 2em;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .service-subtext {
+        font-size: 1.2em;
+        color: #fff;
+    }
+
+    .connecting, #unavailableScreen {
+        position: fixed;
+        top:0; left:0;
+        width:100%; height:100%;
+        background-color: rgba(0,0,0,0.85);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 2em;
+        display: none;
+        z-index: 100;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .spinner {
+        margin-top: 20px;
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #E30613;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg);}
+        100% { transform: rotate(360deg);}
+    }
+
+    #help {
+        position: absolute;
+        bottom: 40px;
+        right: 40px;
+        width: 100px;
+        height: 100px;
+        background-color: #E30613;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5em;
+        font-weight: bold;
+        cursor: pointer;
+        color: #fff;
+        z-index: 10;
+    }
+
+    #help-text {
+        position: fixed;
+        bottom: 160px;
+        right: 40px;
+        width: 400px;
+        background: rgba(255,255,255,0.95);
+        color: #000;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+        font-size: 1.2em;
+        line-height: 1.6em;
+        display: none;
+        z-index: 200;
+        white-space: pre-line;
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <h1>Witamy w Banku PEKAO SA</h1>
+    <h2>Wybierz temat rozmowy</h2>
+</header>
+
+<img id="qrcode" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=PEKAO" alt="QR Kod">
+<img id="bankLogo" src="https://cdn-netpr.pl/file/mediakit/2515574/ba/pekao_pion_cmyk.png" alt="PEKAO SA Logo">
+
+<main>
+    <div class="service-card" onclick="connectService('Kredyt')">
+        <div class="service-content">
+            <div class="service-icon">🏠</div>
+            <div class="service-label">Kredyt</div>
+            <div class="service-subtext">Hipoteczny / gotówkowy</div>
+        </div>
+    </div>
+    <div class="service-card" onclick="connectService('Pożyczka')">
+        <div class="service-content">
+            <div class="service-icon">🔁</div>
+            <div class="service-label">Pożyczka</div>
+            <div class="service-subtext">Szybkie finansowanie</div>
+        </div>
+    </div>
+    <div class="service-card" onclick="connectService('Ubezpieczenia')">
+        <div class="service-content">
+            <div class="service-icon">🛡️</div>
+            <div class="service-label">Ubezpieczenia</div>
+            <div class="service-subtext">Życie / majątek / zdrowie</div>
+        </div>
+    </div>
+    <div class="service-card" onclick="connectService('Leasing')">
+        <div class="service-content">
+            <div class="service-icon">🚗</div>
+            <div class="service-label">Leasing</div>
+            <div class="service-subtext">Dla firm</div>
+        </div>
+    </div>
+</main>
+
+<div id="help">?</div>
+<div id="help-text">
+1. Wybierz usługę  
+2. Poczekaj na połączenie z Doradcą  
+3. W razie niedostępności Doradcy uzyskasz pomoc od osoby z Oddziału. 
+Pamiętaj, aby posiadać aplikację mobilną Banku PEKAO w celu uwierzytelnienia i zeskanowania kodu QR na ekranie
+</div>
+
+<div class="connecting" id="connectingScreen">
+    <div style="font-size:2em; text-align:center; margin-bottom:30px;">
+        Za chwilę dołączy Doradca, proszę czekać
+    </div>
+    <div class="spinner"></div>
+</div>
+
+<div class="connecting" id="unavailableScreen">
+    Wszyscy Doradcy są zajęci na innych spotkaniach.<br>
+    Za chwilę otrzymasz wskazówki od osoby z Oddziału.
+</div>
+
+<script>
+    const serviceDialMap = {
+        'Kredyt': 'piglosek@cisco.com',
+        'Pożyczka': 'piglosek.cisco@webex.com',
+        'Ubezpieczenia': 'rtbc@davijennbootcampint-1xbd.rooms.webex.com',
+        'Leasing': '1112'
+    };
+
+    function connectService(service) {
+        document.getElementById('connectingScreen').style.display = 'flex';
+        setTimeout(() => initiateCall(service), 1000);
+    }
+
+    function initiateCall(service) {
+        if (window.CiscoDeskPro && CiscoDeskPro.call) {
+            try {
+                CiscoDeskPro.call.sip(serviceDialMap[service]);
+            } catch(e) {
+                showUnavailable();
+            }
+        } else {
+            showUnavailable();
+        }
+    }
+
+    function showUnavailable() {
+        document.getElementById('connectingScreen').style.display = 'none';
+        const unavailableScreen = document.getElementById('unavailableScreen');
+        unavailableScreen.style.display = 'flex';
+        setTimeout(() => { unavailableScreen.style.display = 'none'; }, 5000);
+    }
+
+    const helpIcon = document.getElementById('help');
+    const helpText = document.getElementById('help-text');
+    helpIcon.addEventListener('click', () => {
+        helpText.style.display = helpText.style.display === 'block' ? 'none' : 'block';
+    });
+</script>
+
+</body>
+</html>
